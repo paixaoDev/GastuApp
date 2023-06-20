@@ -18,3 +18,6 @@ val GreenBackgroundVariant = Color(0xFF4DB5AB)
 val RedBackground = Color(0xFFF14C43)
 val GreenAlert = Color(0xFF3E802F)
 val RedAlert = Color(0xFFA82323)
+
+
+val BottomSheetBackground = Color(0x881F1F1F)
