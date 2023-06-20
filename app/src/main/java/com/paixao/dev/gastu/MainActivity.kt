@@ -39,6 +39,7 @@ import com.paixao.dev.gastu.presentation.viewmodel.HomeViewModel
 import com.paixao.dev.gastu.ui.composable.BottomSheetForm
 import com.paixao.dev.gastu.ui.composable.HomeHeaderWitchButtons
 import com.paixao.dev.gastu.ui.composable.card.DealCard
+import com.paixao.dev.gastu.ui.composable.layout.BottomSheetLayoutContent
 import com.paixao.dev.gastu.ui.theme.GastuTheme
 import com.paixao.dev.gastu.ui.theme.GreenBackground
 import com.paixao.dev.gastu.ui.theme.RedBackground
@@ -56,18 +57,38 @@ class MainActivity : ComponentActivity() {
         viewModel.fetchHome()
         setContent {
             GastuTheme {
+                val homeUiState = viewModel.homeState.collectAsState()
+                var isEditing by remember { mutableStateOf(false) }
+                var editingType by remember { mutableStateOf(DealTypeEnum.Spend) }
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = WhiteBackground20
                 ) {
-                    val homeUiState = viewModel.homeState.collectAsState()
-                    DealsContentList(homeUiState.value.homeModel,
-                        earningClick = {},
-                        spendClick = {},
-                        onSave = {
-                            viewModel.addDeal(it)
+                    BottomSheetLayoutContent(
+                        tittle = "Edite sua Transação",
+                        show = isEditing,
+                        content = {
+                            DealsContentList(homeUiState.value.homeModel,
+                                earningClick = {
+                                    isEditing = true
+                                    editingType = DealTypeEnum.Earning
+                                },
+                                spendClick = {
+                                    isEditing = true
+                                    editingType = DealTypeEnum.Spend
+                                }
+                            )
+                        },
+                        bottomSheetContent = {
+                            BottomSheetForm(editingType) {
+                                isEditing = false
+                                viewModel.addDeal(it)
+                            }
                         }
-                    )
+                    ) {
+                        isEditing = !isEditing
+                    }
                 }
             }
         }
@@ -79,12 +100,9 @@ class MainActivity : ComponentActivity() {
 internal fun DealsContentList(
     homeModel: HomeModel,
     earningClick: () -> Unit = {},
-    spendClick: () -> Unit = {},
-    onSave: (DealModel) -> Unit = {}
+    spendClick: () -> Unit = {}
 ) {
     var showDetails by remember { mutableStateOf(true) }
-    var isEditing by remember { mutableStateOf(false) }
-    var editingType by remember { mutableStateOf(DealTypeEnum.Spend) }
 
     Column {
         HomeHeaderWitchButtons(
@@ -97,22 +115,12 @@ internal fun DealsContentList(
                 showDetails = !showDetails
             },
             earningsOnClick = {
-                isEditing = true
-                editingType = DealTypeEnum.Earning
                 earningClick.invoke()
             },
             spendOnClick = {
-                isEditing = true
-                editingType = DealTypeEnum.Spend
                 spendClick.invoke()
             }
         )
-
-        if (isEditing)
-            BottomSheetForm(editingType) {
-                isEditing = false
-                onSave.invoke(it)
-            }
 
         Spacer(modifier = Modifier.size(5.dp))
 
