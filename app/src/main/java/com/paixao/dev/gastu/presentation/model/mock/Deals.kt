@@ -5,6 +5,7 @@ import com.paixao.dev.gastu.domain.util.DealTypeEnum
 import com.paixao.dev.gastu.presentation.model.DealDescriptionModel
 import com.paixao.dev.gastu.presentation.model.DealInfoModel
 import com.paixao.dev.gastu.presentation.model.DealModel
+import java.math.BigDecimal
 
 object Deals {
     internal val dealsList = listOf(
@@ -13,7 +14,7 @@ object Deals {
             "3e1fr13241",
             DealInfoModel(
                 date = "17/05/1993",
-                value = 0f,
+                value = BigDecimal.ZERO,
                 hasExecuted = true,
                 hasFixed = true
             ),
@@ -30,7 +31,7 @@ object Deals {
             "3e1fsggfr13241",
             DealInfoModel(
                 date = "17/05/1993",
-                value = 0f,
+                value = BigDecimal.ZERO,
                 hasExecuted = true,
                 hasFixed = true
             ),
@@ -47,7 +48,7 @@ object Deals {
             "3e1ffdsgr13241",
             DealInfoModel(
                 date = "17/05/1993",
-                value = 0f,
+                value = BigDecimal.ZERO,
                 hasExecuted = true,
                 hasFixed = true
             ),

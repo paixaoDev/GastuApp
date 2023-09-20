@@ -8,10 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,15 +19,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paixao.dev.gastu.ui.theme.GastuTheme
-import com.paixao.dev.gastu.ui.theme.GreenBackgroundVariant
 import com.paixao.dev.gastu.ui.theme.Typography
 
 @Composable
-fun TextWithButton(
+fun HeaderTittleWithCustomIconButton(
     text: String,
-    buttonText: String = "",
     buttonIcon: ImageVector = Icons.Default.Close,
-    buttonContainerColor: Color = GreenBackgroundVariant,
+    buttonContainerColor: Color = Color.Black,
     onClick: () -> Unit = {}
 ) {
     Row(
@@ -41,11 +38,10 @@ fun TextWithButton(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = text, style = Typography.titleMedium)
-        Button(
+        TextButton(
             onClick = { onClick.invoke() },
-            colors = ButtonDefaults.buttonColors(containerColor = buttonContainerColor)
         ) {
-            Icon(buttonIcon, "")
+            Icon(buttonIcon, "", tint = buttonContainerColor)
         }
     }
 
@@ -55,6 +51,6 @@ fun TextWithButton(
 @Composable
 fun GreetingPreview() {
     GastuTheme {
-        TextWithButton("Titulo")
+        HeaderTittleWithCustomIconButton("Titulo")
     }
 }

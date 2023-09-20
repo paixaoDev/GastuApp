@@ -1,6 +1,6 @@
 package com.paixao.dev.gastu
 
-import com.paixao.dev.gastu.extensions.removeCurrency
+import com.paixao.dev.gastu.extensions.removeCurrencySymbol
 import com.paixao.dev.gastu.extensions.toCurrency
 import com.paixao.dev.gastu.extensions.toFloatCurrency
 import org.junit.Test
@@ -18,6 +18,14 @@ class ExampleUnitTest {
     }
 
     @Test
+    fun `when pass string convert remove currency symbol`() {
+        val expected = "140.30"
+        val value = "R$ 140.30"
+
+        assertEquals(expected, value.removeCurrencySymbol())
+    }
+
+    @Test
     fun `when pass string convert to float`() {
         val expected = 140.30f
         val value = "R$ 140.30"
@@ -26,10 +34,10 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun `when pass string convert to float 2`() {
-        val expected = "140.30"
-        val value = "R$ 140.30,00"
+    fun `when pass value mask then`() {
+        val expected = 140.30f
+        val value = "R$ 140.30"
 
-        assertEquals(expected, value.removeCurrency())
+        assertEquals(expected, value.toFloatCurrency())
     }
 }

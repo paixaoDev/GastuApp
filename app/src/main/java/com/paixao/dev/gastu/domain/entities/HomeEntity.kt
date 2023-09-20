@@ -4,8 +4,8 @@ import androidx.room.Entity
 
 @Entity
 data class HomeEntity constructor(
-    val currency: Float,
-    val spendCurrency: Float,
-    val earningCurrency: Float,
+    val currency: String,
+    val spendCurrency: String,
+    val earningCurrency: String,
     val deals: List<DealEntity>?
 )

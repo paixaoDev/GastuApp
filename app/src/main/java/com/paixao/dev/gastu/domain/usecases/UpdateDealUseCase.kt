@@ -8,12 +8,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class CreateDealUseCase @Inject constructor(
+class UpdateDealUseCase  @Inject constructor(
     private val repository: DealRepository
 ) {
     operator fun invoke(deal: DealModel): Flow<Result<String, String>> = flow {
         try {
-            repository.saveUserDeal(deal.toEntity())
+            repository.updateUserDeal(deal.toEntity())
             emit(Result.Success(""))
         } catch (t: Throwable) {
 

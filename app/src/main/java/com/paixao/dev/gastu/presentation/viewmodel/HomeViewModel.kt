@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paixao.dev.gastu.domain.usecases.CreateDealUseCase
 import com.paixao.dev.gastu.domain.usecases.PopulateHeaderUseCase
+import com.paixao.dev.gastu.domain.usecases.UpdateDealUseCase
 import com.paixao.dev.gastu.domain.util.Result
 import com.paixao.dev.gastu.presentation.model.DealModel
 import com.paixao.dev.gastu.presentation.model.toModel
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     val populateHeaderUseCase: PopulateHeaderUseCase,
-    val createDealUseCase: CreateDealUseCase
+    val createDealUseCase: CreateDealUseCase,
+    val updateDealUseCase: UpdateDealUseCase,
 ) : ViewModel() {
 
     private val _homeState = MutableStateFlow(HomeUiState())
@@ -32,12 +34,14 @@ class HomeViewModel @Inject constructor(
                 }
 
                 is Result.Success -> {
-                    _homeState.value = result.data?.let {
-                        HomeUiState(it.toModel())
-                    } ?: HomeUiState()
+                    _homeState.value = HomeUiState(result.data.toModel())
                 }
 
                 is Result.Error -> {
+
+                }
+
+                is Result.Fail -> {
 
                 }
             }
@@ -52,11 +56,36 @@ class HomeViewModel @Inject constructor(
                 }
 
                 is Result.Success -> {
-                    //TODO dar ok com novo deal
                     fetchHome()
                 }
 
                 is Result.Error -> {
+
+                }
+
+                is Result.Fail -> {
+
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun updateDeal (deal: DealModel){
+        updateDealUseCase(deal).onEach { result ->
+            when (result) {
+                is Result.Loading -> {
+
+                }
+
+                is Result.Success -> {
+                    fetchHome()
+                }
+
+                is Result.Error -> {
+
+                }
+
+                is Result.Fail -> {
 
                 }
             }

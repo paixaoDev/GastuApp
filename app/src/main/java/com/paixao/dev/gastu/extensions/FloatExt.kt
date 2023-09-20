@@ -1,16 +1,19 @@
 package com.paixao.dev.gastu.extensions
 
 import java.text.NumberFormat
-import java.util.Locale
 
 fun Float.toCurrency(): String {
-    val numberFormat = NumberFormat.getCurrencyInstance(Locale.getDefault())
-    return numberFormat.format((this))
+    val formattedValue = this
+    return NumberFormat.getCurrencyInstance().format((formattedValue))
 }
 
 fun String.toFloatCurrency(): Float {
     if (this.isNotEmpty()) {
-        return this.removeCurrency().replace(",".toRegex(), "").trim().toFloat()
+        val originalText = this.removeCurrencySymbol()
+            .replace(" ".toRegex(), "")
+            .replace("[,.]".toRegex(), "")
+            .trim()
+        return originalText.toFloat() / 100
     }
     return 0f
 }

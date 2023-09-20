@@ -41,14 +41,24 @@ fun String.getDayName(): String {
     val calendar = Calendar.getInstance(Locale.getDefault())
     calendar.timeZone = TimeZone.getDefault()
     calendar.set(dates[2].toInt(), dates[1].toInt() - 1, dates[0].toInt())
+    val finalValue =
+        calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
+            ?.replace("[,.]".toRegex(), "")
+            ?.getFirst("-")
+    return finalValue ?: ""
+}
 
-    return calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()) ?: ""
-        .getFirst("-")
-        .uppercase()
+fun String.getMouthName(): String {
+    val dates = this.split("/")
+    val calendar = Calendar.getInstance(Locale.getDefault())
+    calendar.timeZone = TimeZone.getDefault()
+    calendar.set(dates[2].toInt(), dates[1].toInt() - 1, dates[0].toInt())
+
+    return calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) ?: ""
 }
 
 fun String.getFirst(delimiters: String): String {
-    return this.split(delimiters).first()
+    return this.split(delimiters.toRegex()).first()
 }
 
 fun Pair<String, String>.combineStringWithDot(): String {
@@ -59,8 +69,28 @@ fun String.removeMask(): String {
     return this.replace("[^0-9 ]".toRegex(), "")
 }
 
-fun String.removeCurrency(): String {
+fun String.removeCurrencySymbol(): String {
     val numberFormat = NumberFormat.getCurrencyInstance(Locale.getDefault())
     val currencySymbol = numberFormat.currency?.symbol ?: ""
-    return replace(currencySymbol, "")
+    return replace(currencySymbol, "").replace(" ".toRegex(), "")
+}
+
+fun String.clearString(): String{
+    return this
+        .replace(",", "")
+        .replace(".", "")
+        .replace(":", "")
+        .replace("(", "")
+        .replace(")", "")
+        .replace("[", "")
+        .replace("]", "")
+        .replace("{", "")
+        .replace("}", "")
+        .replace("//", "")
+        .replace("\\", "")
+        .replace("/", "")
+        .replace("-", "")
+        .replace("_", "")
+        .replace("|", "")
+        .replace(" ", "")
 }

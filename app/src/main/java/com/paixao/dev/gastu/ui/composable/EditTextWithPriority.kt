@@ -7,8 +7,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +40,9 @@ fun EditTextWithPriority(
             textStyle = Typography.bodyLarge,
             keyboardOptions = keyboardOptions,
             modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent
+            ),
             singleLine = true,
             label = {
                 Text(hint)
@@ -47,7 +52,6 @@ fun EditTextWithPriority(
                     Text("Obrigatória", color = RedAlert)
                 }
             },
-
             onValueChange = {
                 onChange.invoke(it)
             }
@@ -76,6 +80,9 @@ fun EditTextWithPriority(
             visualTransformation = visualTransformation,
             textStyle = Typography.bodyLarge,
             keyboardOptions = keyboardOptions,
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent
+            ),
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             label = {
