@@ -1,12 +1,10 @@
 package com.paixao.dev.gastu.ui.util
 
-
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
-import com.paixao.dev.gastu.extensions.removeCurrency
 import com.paixao.dev.gastu.extensions.removeMask
-import java.text.NumberFormat
-
+import com.paixao.dev.gastu.extensions.toCurrency
+import com.paixao.dev.gastu.extensions.unMaskValueToBigDecimal
 
 fun String.mask(mask: String): String {
     var out = ""
@@ -53,13 +51,10 @@ fun TextFieldValue.mask(mask: String): TextFieldValue {
 }
 
 fun TextFieldValue.maskCurrency(): TextFieldValue {
-
     var out = ""
-    val originalText = this.text.removeCurrency().replace("[,.]".toRegex(), "").trim()
 
-    if (originalText.isNotEmpty()) {
-        val parsed = originalText.toFloat() /100
-        val formatted = NumberFormat.getCurrencyInstance().format((parsed))
+    if (this.text.isNotEmpty()) {
+        val formatted = this.text.unMaskValueToBigDecimal().toCurrency()
         out = formatted
     }
 

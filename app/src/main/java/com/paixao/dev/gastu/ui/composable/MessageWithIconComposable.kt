@@ -1,8 +1,10 @@
 package com.paixao.dev.gastu.ui.composable
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -56,6 +58,12 @@ fun MessageWithIcon(
 @Composable
 fun MessageWithIconPreview() {
     GastuTheme {
-        MessageWithIcon("R$ 0000000,00", Icons.Default.Warning, horizontalAlignment = Alignment.End)
+        Box(modifier = Modifier.height(50.dp)) {
+            MessageWithIcon(
+                "R$ 0000000,00",
+                Icons.Default.Warning,
+                horizontalAlignment = Alignment.End
+            )
+        }
     }
 }

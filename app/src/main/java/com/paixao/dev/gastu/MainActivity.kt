@@ -31,12 +31,13 @@ import androidx.compose.ui.unit.dp
 import com.paixao.dev.gastu.domain.util.DealTypeEnum
 import com.paixao.dev.gastu.extensions.combineStringWithDot
 import com.paixao.dev.gastu.extensions.getDayName
+import com.paixao.dev.gastu.extensions.getMouthName
 import com.paixao.dev.gastu.extensions.toCurrency
 import com.paixao.dev.gastu.presentation.model.DealModel
-import com.paixao.dev.gastu.presentation.model.HomeModel
+import com.paixao.dev.gastu.presentation.model.UserModel
 import com.paixao.dev.gastu.presentation.model.mock.Deals
 import com.paixao.dev.gastu.presentation.viewmodel.HomeViewModel
-import com.paixao.dev.gastu.ui.composable.BottomSheetForm
+import com.paixao.dev.gastu.ui.composable.SimpleCurrencyForm
 import com.paixao.dev.gastu.ui.composable.HomeHeaderWitchButtons
 import com.paixao.dev.gastu.ui.composable.card.DealCard
 import com.paixao.dev.gastu.ui.composable.layout.BottomSheetLayoutContent
@@ -46,6 +47,7 @@ import com.paixao.dev.gastu.ui.theme.RedBackground
 import com.paixao.dev.gastu.ui.theme.Typography
 import com.paixao.dev.gastu.ui.theme.WhiteBackground20
 import dagger.hilt.android.AndroidEntryPoint
+import java.math.BigDecimal
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -60,6 +62,7 @@ class MainActivity : ComponentActivity() {
                 val homeUiState = viewModel.homeState.collectAsState()
                 var isEditing by remember { mutableStateOf(false) }
                 var editingType by remember { mutableStateOf(DealTypeEnum.Spend) }
+                var deal: DealModel? = null
 
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -69,7 +72,9 @@ class MainActivity : ComponentActivity() {
                         tittle = "Edite sua Transação",
                         show = isEditing,
                         content = {
-                            DealsContentList(homeUiState.value.homeModel,
+                            DealsContentList(
+                                homeUiState.value.user,
+                                homeUiState.value.dealList,
                                 earningClick = {
                                     isEditing = true
                                     editingType = DealTypeEnum.Earning
@@ -77,17 +82,29 @@ class MainActivity : ComponentActivity() {
                                 spendClick = {
                                     isEditing = true
                                     editingType = DealTypeEnum.Spend
+                                },
+                                dealClick = {
+                                    deal = it
+                                    isEditing = true
+                                    editingType = DealTypeEnum.valueOf(it.dealType)
                                 }
                             )
                         },
                         bottomSheetContent = {
-                            BottomSheetForm(editingType) {
-                                isEditing = false
-                                viewModel.addDeal(it)
+                            SimpleCurrencyForm(editingType, deal) {
+                                if (deal != null) {
+                                    isEditing = false
+                                    viewModel.updateDeal(it)
+                                    deal = null
+                                } else {
+                                    isEditing = false
+                                    viewModel.addDeal(it)
+                                }
                             }
                         }
                     ) {
                         isEditing = !isEditing
+                        deal = null
                     }
                 }
             }
@@ -98,18 +115,20 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun DealsContentList(
-    homeModel: HomeModel,
+    userModel: UserModel,
+    dealsList: List<DealModel>?,
     earningClick: () -> Unit = {},
-    spendClick: () -> Unit = {}
+    spendClick: () -> Unit = {},
+    dealClick: (DealModel) -> Unit = {}
 ) {
     var showDetails by remember { mutableStateOf(true) }
 
     Column {
         HomeHeaderWitchButtons(
-            currency = homeModel.currency.toCurrency(),
-            spendCurrency = homeModel.spendCurrency.toCurrency(),
-            earningCurrency = homeModel.earningCurrency.toCurrency(),
-            backgroundColor = if (homeModel.currency > 0) GreenBackground else RedBackground,
+            currency = userModel.currency.toCurrency(),
+            spendCurrency = userModel.spendCurrency.toCurrency(),
+            earningCurrency = userModel.earningCurrency.toCurrency(),
+            backgroundColor = if (userModel.currency > BigDecimal.ZERO) GreenBackground else RedBackground,
             showDetails = showDetails,
             lockOnClick = {
                 showDetails = !showDetails
@@ -124,8 +143,8 @@ internal fun DealsContentList(
 
         Spacer(modifier = Modifier.size(5.dp))
 
-        homeModel.deals?.let { list ->
-            val grouped = list.groupBy { it.info.date }
+        dealsList?.let { list ->
+            val grouped = list.sortedByDescending { it.date }.groupBy { it.date }
             LazyColumn(
                 contentPadding = PaddingValues(horizontal = 10.dp, vertical = 37.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -134,11 +153,14 @@ internal fun DealsContentList(
                     stickyHeader {
                         ContentListTittle(it.key)
                     }
-
                     items(
                         items = it.value
                     ) { deal ->
-                        DealCard(deal = deal, modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp))
+                        DealCard(
+                            deal = deal,
+                            modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp),
+                            onClick = dealClick
+                        )
                     }
                 }
             }
@@ -149,7 +171,16 @@ internal fun DealsContentList(
 @Composable
 internal fun ContentListTittle(dealDate: String) {
     Text(
-        Pair(dealDate.getDayName(), dealDate.substring(0, 2)).combineStringWithDot(),
+        text = "${
+            dealDate.getMouthName().uppercase()
+        } - ${
+            Pair(
+                dealDate.getDayName().replaceFirstChar {
+                    it.uppercase()
+                },
+                dealDate.substring(0, 2)
+            ).combineStringWithDot()
+        }",
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
@@ -160,15 +191,17 @@ internal fun ContentListTittle(dealDate: String) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun DealsContentListPreview() {
     GastuTheme {
         Column {
             DealsContentList(
-                HomeModel(
-                    0f,
-                    0f,
-                    0f,
-                    Deals.dealsList.sortedByDescending { it.info.date })
+                UserModel(
+                    0.toString(),
+                    BigDecimal.ZERO,
+                    BigDecimal.ZERO,
+                    BigDecimal.ZERO
+                ),
+                Deals.dealsList.sortedByDescending { it.date }
             )
         }
     }

@@ -21,3 +21,4 @@ val RedAlert = Color(0xFFA82323)
 
 
 val BottomSheetBackground = Color(0x881F1F1F)
+val BottomSheetTransparentBackground = Color(0x881F1F1F)

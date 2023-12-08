@@ -6,6 +6,7 @@ interface DealRepository {
     suspend fun saveUserDeal(deal: DealEntity)
     suspend fun updateUserDeal(deal: DealEntity)
     suspend fun deleteUserDeal(deal: DealEntity)
-    suspend fun loadUserDeal(dealID: Int): DealEntity
-    suspend fun loadUserDealList(dealType: String): List<DealEntity>
+    suspend fun loadUserDeal(dealID: String): DealEntity
+    suspend fun loadUserDealList(userID: String, dealType: String): List<DealEntity>
+    suspend fun loadUserDealList(userID: String): List<DealEntity>
 }

@@ -19,7 +19,7 @@ interface UserDealsDao {
     @Update
     suspend fun updateUser(spend: UserEntity)
 
-    @Query("SELECT * FROM user WHERE id - :id")
+    @Query("SELECT * FROM user WHERE id = :id")
     suspend fun loadUser(id: String): UserEntity
 
     //Deal
@@ -37,4 +37,7 @@ interface UserDealsDao {
 
     @Query("SELECT * FROM deal WHERE dealType = :dealType")
     suspend fun searchDeals(dealType: String): List<DealEntity>
+
+    @Query("SELECT * FROM deal")
+    suspend fun searchDeals(): List<DealEntity>
 }

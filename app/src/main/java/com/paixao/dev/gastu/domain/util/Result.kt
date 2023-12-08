@@ -1,12 +1,9 @@
 package com.paixao.dev.gastu.domain.util
 
-sealed class Result<T>(
-    val data: T? = null,
-    val message: T? = null,
-    val throwable: Throwable? = null
-) {
+sealed class Result<out A, out B> {
 
-    class Success<T>(data: T) : Result<T>(data = data)
-    class Error<T>(message: T, data: T? = null) : Result<T>(data, message)
-    class Loading<T>(data: T? = null) : Result<T>(data)
+    data class Success<A> constructor(val data: A) : Result<A, Nothing>()
+    data class Error<B> constructor(val message: B) : Result<Nothing, B>()
+    data class Fail constructor(val throwable: Throwable? = null) : Result<Nothing, Nothing>()
+    object Loading : Result<Nothing, Nothing>()
 }

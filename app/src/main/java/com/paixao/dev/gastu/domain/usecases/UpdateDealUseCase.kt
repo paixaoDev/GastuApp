@@ -10,24 +10,25 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class CreateDealUseCase @Inject constructor(
+class UpdateDealUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val repository: DealRepository
 ) {
     operator fun invoke(deal: DealEntity): Flow<Result<String, String>> = flow {
         try {
             val user = userRepository.loadUser("0")
+            val oldDeal = repository.loadUserDeal(dealID = deal.id)
             user?.let { userSafe ->
                 var spend = userSafe.spendCurrency
                 var earning = userSafe.earningCurrency
 
                 when (deal.dealType) {
                     DealTypeEnum.Spend.name -> {
-                        spend += deal.value
+                        spend = (user.spendCurrency - oldDeal.value) + deal.value
                     }
 
                     DealTypeEnum.Earning.name -> {
-                        earning += deal.value
+                        earning =  (user.earningCurrency - oldDeal.value) + deal.value
                     }
                 }
 
@@ -42,7 +43,8 @@ class CreateDealUseCase @Inject constructor(
                     )
                 )
             }
-            repository.saveUserDeal(deal)
+
+            repository.updateUserDeal(deal)
             emit(Result.Success(""))
         } catch (t: Throwable) {
             emit(Result.Fail(t))
