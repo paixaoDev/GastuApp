@@ -34,7 +34,7 @@ import com.paixao.dev.gastu.extensions.getDayName
 import com.paixao.dev.gastu.extensions.getMouthName
 import com.paixao.dev.gastu.extensions.toCurrency
 import com.paixao.dev.gastu.presentation.model.DealModel
-import com.paixao.dev.gastu.presentation.model.HomeModel
+import com.paixao.dev.gastu.presentation.model.UserModel
 import com.paixao.dev.gastu.presentation.model.mock.Deals
 import com.paixao.dev.gastu.presentation.viewmodel.HomeViewModel
 import com.paixao.dev.gastu.ui.composable.SimpleCurrencyForm
@@ -72,7 +72,9 @@ class MainActivity : ComponentActivity() {
                         tittle = "Edite sua Transação",
                         show = isEditing,
                         content = {
-                            DealsContentList(homeUiState.value.homeModel,
+                            DealsContentList(
+                                homeUiState.value.user,
+                                homeUiState.value.dealList,
                                 earningClick = {
                                     isEditing = true
                                     editingType = DealTypeEnum.Earning
@@ -113,7 +115,8 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun DealsContentList(
-    homeModel: HomeModel,
+    userModel: UserModel,
+    dealsList: List<DealModel>?,
     earningClick: () -> Unit = {},
     spendClick: () -> Unit = {},
     dealClick: (DealModel) -> Unit = {}
@@ -122,10 +125,10 @@ internal fun DealsContentList(
 
     Column {
         HomeHeaderWitchButtons(
-            currency = homeModel.currency.toCurrency(),
-            spendCurrency = homeModel.spendCurrency.toCurrency(),
-            earningCurrency = homeModel.earningCurrency.toCurrency(),
-            backgroundColor = if (homeModel.currency > BigDecimal.ZERO) GreenBackground else RedBackground,
+            currency = userModel.currency.toCurrency(),
+            spendCurrency = userModel.spendCurrency.toCurrency(),
+            earningCurrency = userModel.earningCurrency.toCurrency(),
+            backgroundColor = if (userModel.currency > BigDecimal.ZERO) GreenBackground else RedBackground,
             showDetails = showDetails,
             lockOnClick = {
                 showDetails = !showDetails
@@ -140,8 +143,8 @@ internal fun DealsContentList(
 
         Spacer(modifier = Modifier.size(5.dp))
 
-        homeModel.deals?.let { list ->
-            val grouped = list.sortedByDescending { it.info.date }.groupBy { it.info.date }
+        dealsList?.let { list ->
+            val grouped = list.sortedByDescending { it.date }.groupBy { it.date }
             LazyColumn(
                 contentPadding = PaddingValues(horizontal = 10.dp, vertical = 37.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -150,7 +153,6 @@ internal fun DealsContentList(
                     stickyHeader {
                         ContentListTittle(it.key)
                     }
-
                     items(
                         items = it.value
                     ) { deal ->
@@ -193,11 +195,13 @@ fun DealsContentListPreview() {
     GastuTheme {
         Column {
             DealsContentList(
-                HomeModel(
+                UserModel(
+                    0.toString(),
                     BigDecimal.ZERO,
                     BigDecimal.ZERO,
-                    BigDecimal.ZERO,
-                    Deals.dealsList.sortedByDescending { it.info.date })
+                    BigDecimal.ZERO
+                ),
+                Deals.dealsList.sortedByDescending { it.date }
             )
         }
     }

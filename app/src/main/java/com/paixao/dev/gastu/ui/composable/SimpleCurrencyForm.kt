@@ -30,9 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paixao.dev.gastu.domain.util.DealTypeEnum
 import com.paixao.dev.gastu.extensions.toCurrency
-import com.paixao.dev.gastu.extensions.toSafeBigDecimal
-import com.paixao.dev.gastu.presentation.model.DealDescriptionModel
-import com.paixao.dev.gastu.presentation.model.DealInfoModel
+import com.paixao.dev.gastu.extensions.unMaskValueToBigDecimal
 import com.paixao.dev.gastu.presentation.model.DealModel
 import com.paixao.dev.gastu.ui.theme.GastuTheme
 import com.paixao.dev.gastu.ui.theme.GreenBackground
@@ -41,23 +39,26 @@ import com.paixao.dev.gastu.ui.util.Mask
 import com.paixao.dev.gastu.ui.util.mask
 import com.paixao.dev.gastu.ui.util.maskCurrency
 
-
 @Composable
-fun SimpleCurrencyForm(dealType: DealTypeEnum, deal: DealModel? = null, onSave: (DealModel) -> Unit) {
+fun SimpleCurrencyForm(
+    dealType: DealTypeEnum,
+    deal: DealModel? = null,
+    onSave: (DealModel) -> Unit
+) {
     Box(
         Modifier.background(color = Color.White)
     ) {
-        var date by remember { mutableStateOf(TextFieldValue(text = deal?.info?.date ?: "")) }
+        var date by remember { mutableStateOf(TextFieldValue(text = deal?.date ?: "")) }
         var value by remember {
             mutableStateOf(
                 TextFieldValue(
-                    text = deal?.info?.value?.toCurrency() ?: ""
+                    text = deal?.value?.toCurrency() ?: ""
                 )
             )
         }
-        var title by remember { mutableStateOf(deal?.description?.name ?: "") }
-        var description by remember { mutableStateOf(deal?.description?.description ?: "") }
-        var hasPaid by remember { mutableStateOf(deal?.info?.hasExecuted ?: false) }
+        var title by remember { mutableStateOf(deal?.name ?: "") }
+        var description by remember { mutableStateOf(deal?.description ?: "") }
+        var hasPaid by remember { mutableStateOf(deal?.hasExecuted ?: false) }
         var dealValue = value.text
         Card(
             Modifier.padding(10.dp),
@@ -113,17 +114,13 @@ fun SimpleCurrencyForm(dealType: DealTypeEnum, deal: DealModel? = null, onSave: 
                                 DealModel(
                                     id = deal?.id ?: java.util.UUID.randomUUID().toString(),
                                     userId = deal?.userId ?: java.util.UUID.randomUUID().toString(),
-                                    info = DealInfoModel(
-                                        date = date.text,
-                                        value = dealValue.toSafeBigDecimal(),
-                                        hasExecuted = hasPaid,
-                                        hasFixed = false
-                                    ),
-                                    description = DealDescriptionModel(
-                                        name = title,
-                                        description = description,
-                                        category = ""
-                                    ),
+                                    date = date.text,
+                                    value = dealValue.unMaskValueToBigDecimal(),
+                                    hasExecuted = hasPaid,
+                                    hasFixed = false,
+                                    name = title,
+                                    description = description,
+                                    category = "",
                                     dealType = deal?.dealType ?: dealType.name
                                 )
                             )

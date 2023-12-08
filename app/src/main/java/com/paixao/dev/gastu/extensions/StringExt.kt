@@ -71,8 +71,8 @@ fun String.removeMask(): String {
 
 fun String.removeCurrencySymbol(): String {
     val numberFormat = NumberFormat.getCurrencyInstance(Locale.getDefault())
-    val currencySymbol = numberFormat.currency?.symbol ?: ""
-    return replace(currencySymbol, "").replace(" ".toRegex(), "")
+    val currencySymbol = numberFormat.currency?.symbol ?: "R$"
+    return replace(currencySymbol, "").trim()
 }
 
 fun String.clearString(): String{

@@ -2,11 +2,13 @@ package com.paixao.dev.gastu
 
 import com.paixao.dev.gastu.extensions.removeCurrencySymbol
 import com.paixao.dev.gastu.extensions.toCurrency
-import com.paixao.dev.gastu.extensions.toFloatCurrency
+import com.paixao.dev.gastu.extensions.unMaskValueToBigDecimal
 import org.junit.Test
 import org.junit.Assert.*
+import org.junit.runner.RunWith
+import org.mockito.junit.MockitoJUnitRunner
 
-
+@RunWith(MockitoJUnitRunner::class)
 class ExampleUnitTest {
 
     @Test
@@ -26,18 +28,10 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun `when pass string convert to float`() {
-        val expected = 140.30f
-        val value = "R$ 140.30"
+    fun `when pass string convert to currency`() {
+        val expected = "R$ 140.030,10"
+        val value = "R$ 140.030,10"
 
-        assertEquals(expected, value.toFloatCurrency())
-    }
-
-    @Test
-    fun `when pass value mask then`() {
-        val expected = 140.30f
-        val value = "R$ 140.30"
-
-        assertEquals(expected, value.toFloatCurrency())
+        assertEquals(expected, value.unMaskValueToBigDecimal().toCurrency())
     }
 }

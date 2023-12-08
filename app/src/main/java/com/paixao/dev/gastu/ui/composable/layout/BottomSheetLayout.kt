@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paixao.dev.gastu.DealsContentList
 import com.paixao.dev.gastu.domain.util.DealTypeEnum
-import com.paixao.dev.gastu.presentation.model.HomeModel
+import com.paixao.dev.gastu.presentation.model.UserModel
 import com.paixao.dev.gastu.presentation.model.mock.Deals
 import com.paixao.dev.gastu.ui.composable.SimpleCurrencyForm
 import com.paixao.dev.gastu.ui.composable.HeaderTittleWithCustomIconButton
@@ -121,11 +121,13 @@ fun BottomSheetPreview() {
             tittle = "Botton Sheet Preview",
             content = {
                 DealsContentList(
-                    HomeModel(
+                    UserModel(
+                        "0",
                         BigDecimal.ZERO,
                         BigDecimal.ZERO,
-                        BigDecimal.ZERO,
-                        Deals.dealsList.sortedByDescending { it.info.date })
+                        BigDecimal.ZERO
+                    ),
+                    Deals.dealsList.sortedByDescending { it.date }
                 )
             },
             bottomSheetContent = {

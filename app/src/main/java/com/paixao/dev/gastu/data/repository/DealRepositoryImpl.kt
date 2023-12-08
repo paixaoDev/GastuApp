@@ -21,11 +21,15 @@ internal class DealRepositoryImpl @Inject constructor(
         return dao.deleteDeal(deal)
     }
 
-    override suspend fun loadUserDeal(dealID: Int): DealEntity {
-        return dao.loadDeal(dealID.toString())
+    override suspend fun loadUserDeal(dealID: String): DealEntity {
+        return dao.loadDeal(dealID)
     }
 
-    override suspend fun loadUserDealList(dealType: String): List<DealEntity> {
+    override suspend fun loadUserDealList(userID: String, dealType: String): List<DealEntity> {
         return dao.searchDeals(dealType)
+    }
+
+    override suspend fun loadUserDealList(userID: String): List<DealEntity> {
+        return dao.searchDeals()
     }
 }

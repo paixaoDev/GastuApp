@@ -3,10 +3,11 @@ package com.paixao.dev.gastu.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paixao.dev.gastu.domain.usecases.CreateDealUseCase
-import com.paixao.dev.gastu.domain.usecases.PopulateHeaderUseCase
+import com.paixao.dev.gastu.domain.usecases.PopulateHomeContentUseCase
 import com.paixao.dev.gastu.domain.usecases.UpdateDealUseCase
 import com.paixao.dev.gastu.domain.util.Result
 import com.paixao.dev.gastu.presentation.model.DealModel
+import com.paixao.dev.gastu.presentation.model.toEntity
 import com.paixao.dev.gastu.presentation.model.toModel
 import com.paixao.dev.gastu.presentation.state.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    val populateHeaderUseCase: PopulateHeaderUseCase,
+    val populateHomeContentUseCase: PopulateHomeContentUseCase,
     val createDealUseCase: CreateDealUseCase,
     val updateDealUseCase: UpdateDealUseCase,
 ) : ViewModel() {
@@ -28,13 +29,18 @@ class HomeViewModel @Inject constructor(
     val homeState: StateFlow<HomeUiState> = _homeState.asStateFlow()
 
     fun fetchHome() {
-        populateHeaderUseCase().onEach { result ->
+        populateHomeContentUseCase().onEach { result ->
             when (result) {
                 is Result.Loading -> {
+
                 }
 
                 is Result.Success -> {
-                    _homeState.value = HomeUiState(result.data.toModel())
+                    _homeState.value =
+                        HomeUiState(
+                            user = result.data.first.toModel(),
+                            dealList = result.data.second?.toModel()
+                        )
                 }
 
                 is Result.Error -> {
@@ -49,7 +55,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun addDeal(deal: DealModel) {
-        createDealUseCase(deal).onEach { result ->
+        createDealUseCase(deal.toEntity()).onEach { result ->
             when (result) {
                 is Result.Loading -> {
 
@@ -64,14 +70,14 @@ class HomeViewModel @Inject constructor(
                 }
 
                 is Result.Fail -> {
-
+                    result.toString()
                 }
             }
         }.launchIn(viewModelScope)
     }
 
-    fun updateDeal (deal: DealModel){
-        updateDealUseCase(deal).onEach { result ->
+    fun updateDeal(deal: DealModel) {
+        updateDealUseCase(deal.toEntity()).onEach { result ->
             when (result) {
                 is Result.Loading -> {
 

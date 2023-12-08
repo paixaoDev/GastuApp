@@ -9,18 +9,15 @@ fun Number.toCurrency(): String {
     numberFormat.minimumFractionDigits = 2
 
     return numberFormat.format(this).trim()
-        .replace("\u00A0", "")
+        .replace("\u00A0", " ")
 }
 
 fun BigDecimal.divideBy(dividedBy: Int): BigDecimal = divide(BigDecimal(dividedBy))
 
-fun String.toCurrency(dividedBy: Int): String {
-    return clearString().trim().toSafeBigDecimal().divideBy(dividedBy).toCurrency()
-}
-
-
-fun String.toSafeBigDecimal(): BigDecimal = try {
-    BigDecimal(this.trim())
+fun String.unMaskValueToBigDecimal(): BigDecimal = try {
+    val regex = "[^0-9]".toRegex()
+    val cleanedValue: String = regex.replace(this, "")
+    BigDecimal(cleanedValue).divideBy(100)
 } catch (e: Throwable) {
-    BigDecimal("0")
+    BigDecimal.ZERO
 }
