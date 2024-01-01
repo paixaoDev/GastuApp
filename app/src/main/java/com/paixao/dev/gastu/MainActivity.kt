@@ -63,7 +63,6 @@ class MainActivity : ComponentActivity() {
                 var isEditing by remember { mutableStateOf(false) }
                 var editingType by remember { mutableStateOf(DealTypeEnum.Spend) }
                 var deal: DealModel? = null
-
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = WhiteBackground20

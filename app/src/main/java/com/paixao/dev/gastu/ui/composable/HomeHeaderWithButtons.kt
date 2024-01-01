@@ -64,7 +64,7 @@ fun HomeHeaderWitchButtons(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Spacer(modifier = Modifier.size(20.dp))
+                //Spacer(modifier = Modifier.size(20.dp))
                 //MouthDatePicker("Maio", dateOnClick)
                 Spacer(modifier = Modifier.size(20.dp))
                 Text(text = "Saldo em conta", style = Typography.bodySmall, color = Color.White)

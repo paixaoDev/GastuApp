@@ -15,20 +15,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.paixao.dev.gastu.DealsContentList
 import com.paixao.dev.gastu.domain.util.DealTypeEnum
-import com.paixao.dev.gastu.presentation.model.UserModel
-import com.paixao.dev.gastu.presentation.model.mock.Deals
 import com.paixao.dev.gastu.ui.composable.SimpleCurrencyForm
 import com.paixao.dev.gastu.ui.composable.HeaderTittleWithCustomIconButton
 import com.paixao.dev.gastu.ui.theme.BottomSheetBackground
 import com.paixao.dev.gastu.ui.theme.GastuTheme
-import java.math.BigDecimal
 
 @Composable
 fun BottomSheetLayoutContent(
@@ -38,57 +35,66 @@ fun BottomSheetLayoutContent(
     bottomSheetContent: @Composable (ColumnScope) -> Unit,
     onClose: () -> Unit = {},
 ) {
-    BoxWithConstraints(
-        modifier = Modifier.fillMaxHeight().fillMaxWidth()
-    ) {
-        Box(
-            contentAlignment = Alignment.TopStart, modifier = Modifier.fillMaxHeight()
+    Surface() {
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
         ) {
-            Column(content = content)
-        }
-
-        BoxWithConstraints {
-            if (show) {
-                Box(
-                    contentAlignment = Alignment.TopStart,
-                    modifier = Modifier.fillMaxHeight().fillMaxWidth()
-                ) {
-                    Spacer(
-                        modifier = Modifier.fillMaxHeight().fillMaxWidth()
-                            .background(BottomSheetBackground)
-                    )
-                }
+            Box(
+                contentAlignment = Alignment.TopStart, modifier = Modifier.fillMaxHeight()
+            ) {
+                Column(content = content)
             }
 
-            AnimatedVisibility(
-                visible = show,
-                enter = slideInVertically(
-                    initialOffsetY = {
-                        it / 2
-                    }
-                ),
-                exit = slideOutVertically(
-                    targetOffsetY = {
-                        it / 2
-                    }
-                )
-            ) {
-                Box(
-                    contentAlignment = Alignment.BottomStart,
-                    modifier = Modifier.fillMaxHeight()
-                ) {
-                    Box {
-                        BottomSheetItem(
-                            tittle = tittle,
-                            content = bottomSheetContent, onClose = {
-                                onClose.invoke()
-                            }
+            BoxWithConstraints {
+                if (show) {
+                    Box(
+                        contentAlignment = Alignment.TopStart,
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth()
+                    ) {
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth()
+                                .background(BottomSheetBackground)
                         )
+                    }
+                }
+
+                AnimatedVisibility(
+                    visible = show,
+                    enter = slideInVertically(
+                        initialOffsetY = {
+                            it / 2
+                        }
+                    ),
+                    exit = slideOutVertically(
+                        targetOffsetY = {
+                            it / 2
+                        }
+                    )
+                ) {
+                    Box(
+                        contentAlignment = Alignment.BottomStart,
+                        modifier = Modifier.fillMaxHeight()
+                    ) {
+                        Box {
+                            BottomSheetItem(
+                                tittle = tittle,
+                                content = bottomSheetContent, onClose = {
+                                    onClose.invoke()
+                                }
+                            )
+                        }
                     }
                 }
             }
         }
     }
+
 }
 
 @Composable
@@ -120,15 +126,7 @@ fun BottomSheetPreview() {
         BottomSheetLayoutContent(
             tittle = "Botton Sheet Preview",
             content = {
-                DealsContentList(
-                    UserModel(
-                        "0",
-                        BigDecimal.ZERO,
-                        BigDecimal.ZERO,
-                        BigDecimal.ZERO
-                    ),
-                    Deals.dealsList.sortedByDescending { it.date }
-                )
+
             },
             bottomSheetContent = {
                 Column() {

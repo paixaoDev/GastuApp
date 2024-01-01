@@ -25,19 +25,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paixao.dev.gastu.domain.util.DealTypeEnum
+import com.paixao.dev.gastu.extensions.getActualDate
 import com.paixao.dev.gastu.extensions.toCurrency
 import com.paixao.dev.gastu.extensions.unMaskValueToBigDecimal
 import com.paixao.dev.gastu.presentation.model.DealModel
 import com.paixao.dev.gastu.ui.theme.GastuTheme
+import com.paixao.dev.gastu.ui.theme.GrayBackground10
 import com.paixao.dev.gastu.ui.theme.GreenBackground
 import com.paixao.dev.gastu.ui.theme.RedBackground
-import com.paixao.dev.gastu.ui.util.Mask
-import com.paixao.dev.gastu.ui.util.mask
-import com.paixao.dev.gastu.ui.util.maskCurrency
+import com.paixao.dev.gastu.ui.util.maskCurrencyToTextField
 
 @Composable
 fun SimpleCurrencyForm(
@@ -46,33 +45,37 @@ fun SimpleCurrencyForm(
     onSave: (DealModel) -> Unit
 ) {
     Box(
-        Modifier.background(color = Color.White)
+        Modifier.background(color = GrayBackground10)
     ) {
-        var date by remember { mutableStateOf(TextFieldValue(text = deal?.date ?: "")) }
-        var value by remember {
-            mutableStateOf(
-                TextFieldValue(
-                    text = deal?.value?.toCurrency() ?: ""
-                )
-            )
-        }
+        var date by remember { mutableStateOf(deal?.date ?: getActualDate()) }
+        var dealValue by remember { mutableStateOf(deal?.value?.toCurrency() ?: "") }
         var title by remember { mutableStateOf(deal?.name ?: "") }
         var description by remember { mutableStateOf(deal?.description ?: "") }
         var hasPaid by remember { mutableStateOf(deal?.hasExecuted ?: false) }
-        var dealValue = value.text
         Card(
-            Modifier.padding(10.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )
         ) {
-            Column {
-                EditTextWithPriority(
-                    value = date.mask(Mask.DATE_MASK),
-                    hint = "Data da transação",
-                    hasRequired = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-                ) { date = it }
+            Column(
+                modifier = Modifier.padding(20.dp, 20.dp, 20.dp, 0.dp),
+            ) {
+                Row(
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    DateSwipeChangeButton(date)
+                    Spacer(modifier = Modifier.size(20.dp))
+                    EditTextWithPriority(
+                        textFieldValue = dealValue.maskCurrencyToTextField(),
+                        hint = "valor da transação",
+                        hasRequired = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    ) {
+                        dealValue = it
+                    }
+                }
+
+                Spacer(modifier = Modifier.size(28.dp))
 
                 EditTextWithPriority(
                     value = title,
@@ -80,17 +83,13 @@ fun SimpleCurrencyForm(
                     hasRequired = true
                 ) { title = it }
 
-                EditTextWithPriority(
-                    value = value.maskCurrency(),
-                    hint = "Valor da transação",
-                    hasRequired = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                ) {
-                    dealValue = it.text
-                    value = it
-                }
+                Spacer(modifier = Modifier.size(10.dp))
 
-                EditTextWithPriority(description, "Descrição da transação", false) {
+                EditTextWithPriority(
+                    value = description,
+                    hint = "Descrição da transação",
+                    hasRequired = false
+                ) {
                     description = it
                 }
 
@@ -109,12 +108,12 @@ fun SimpleCurrencyForm(
 
                 Button(
                     onClick = {
-                        if (title.isNotBlank() && date.text.isNotBlank()) {
+                        if (title.isNotBlank() && date.isNotBlank()) {
                             onSave.invoke(
                                 DealModel(
                                     id = deal?.id ?: java.util.UUID.randomUUID().toString(),
                                     userId = deal?.userId ?: java.util.UUID.randomUUID().toString(),
-                                    date = date.text,
+                                    date = date,
                                     value = dealValue.unMaskValueToBigDecimal(),
                                     hasExecuted = hasPaid,
                                     hasFixed = false,

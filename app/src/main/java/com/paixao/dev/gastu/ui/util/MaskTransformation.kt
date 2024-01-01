@@ -61,6 +61,28 @@ fun TextFieldValue.maskCurrency(): TextFieldValue {
     return TextFieldValue(out, selection = TextRange(out.length))
 }
 
+fun String.maskCurrency(): String {
+    var out = ""
+
+    if (this.isNotEmpty()) {
+        val formatted = this.unMaskValueToBigDecimal().toCurrency()
+        out = formatted
+    }
+
+    return out
+}
+
+fun String.maskCurrencyToTextField(): TextFieldValue {
+    var out = ""
+
+    if (this.isNotEmpty()) {
+        val formatted = this.unMaskValueToBigDecimal().toCurrency()
+        out = formatted
+    }
+
+    return TextFieldValue(out, selection = TextRange(out.length))
+}
+
 class Mask {
     companion object {
         const val DATE_MASK = "NN/NN/NNNN"

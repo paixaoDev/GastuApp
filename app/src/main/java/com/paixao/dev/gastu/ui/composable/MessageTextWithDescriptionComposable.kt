@@ -2,16 +2,15 @@ package com.paixao.dev.gastu.ui.composable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,9 +25,7 @@ fun MessageTextWithMinorDescription(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
-            .fillMaxHeight()
-            .padding(0.dp, 5.dp),
+        modifier = modifier.padding(0.dp, 0.dp),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -41,6 +38,7 @@ fun MessageTextWithMinorDescription(
             modifier = Modifier.fillMaxWidth(),
             fontSize = 16.sp
         )
+        Spacer(modifier = Modifier.size(5.dp))
         Text(
             text = description.inLineString(),
             style = Typography.bodyMedium,

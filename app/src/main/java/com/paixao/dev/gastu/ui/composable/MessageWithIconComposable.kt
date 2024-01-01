@@ -1,10 +1,8 @@
 package com.paixao.dev.gastu.ui.composable
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -19,8 +17,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.paixao.dev.gastu.extensions.toCurrency
 import com.paixao.dev.gastu.ui.theme.GastuTheme
 import com.paixao.dev.gastu.ui.theme.Typography
+import java.math.BigDecimal
 
 @Composable
 fun MessageWithIcon(
@@ -33,9 +33,7 @@ fun MessageWithIcon(
     iconModifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
-            .fillMaxHeight()
-            .padding(0.dp, 5.dp),
+        modifier = modifier.padding(0.dp, 0.dp),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = horizontalAlignment
     ) {
@@ -46,11 +44,16 @@ fun MessageWithIcon(
             color = textColor,
             fontSize = 16.sp
         )
-        if (icon != null)
-            Icon(icon,
+
+        if (icon != null) {
+            Spacer(modifier = Modifier.size(5.dp))
+            Icon(
+                imageVector = icon,
                 contentDescription = "",
                 tint = iconColor,
-                modifier = iconModifier.size(14.dp))
+                modifier = iconModifier.size(14.dp)
+            )
+        }
     }
 }
 
@@ -58,12 +61,10 @@ fun MessageWithIcon(
 @Composable
 fun MessageWithIconPreview() {
     GastuTheme {
-        Box(modifier = Modifier.height(50.dp)) {
-            MessageWithIcon(
-                "R$ 0000000,00",
-                Icons.Default.Warning,
-                horizontalAlignment = Alignment.End
-            )
-        }
+        MessageWithIcon(
+            BigDecimal.TEN.toCurrency(),
+            Icons.Default.Warning,
+            horizontalAlignment = Alignment.End
+        )
     }
 }

@@ -1,7 +1,9 @@
 package com.paixao.dev.gastu.extensions
 
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
@@ -36,6 +38,28 @@ fun List<String>.inLineString(): String {
     return finalString.dropLast(3)
 }
 
+fun getActualDate(): String {
+    return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+}
+
+fun String.minusActualDate(): String {
+    val dates = this.split("/")
+    val calendar = Calendar.getInstance(Locale.getDefault())
+    calendar.timeZone = TimeZone.getDefault()
+    calendar.set(dates[2].toInt(), dates[1].toInt() - 1, dates[0].toInt())
+    calendar.add(Calendar.DAY_OF_YEAR, -1)
+    return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(calendar.time)
+}
+
+fun String.plusActualDate(): String {
+    val dates = this.split("/")
+    val calendar = Calendar.getInstance(Locale.getDefault())
+    calendar.timeZone = TimeZone.getDefault()
+    calendar.set(dates[2].toInt(), dates[1].toInt() - 1, dates[0].toInt())
+    calendar.add(Calendar.DAY_OF_YEAR, +1)
+    return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(calendar.time)
+}
+
 fun String.getDayName(): String {
     val dates = this.split("/")
     val calendar = Calendar.getInstance(Locale.getDefault())
@@ -53,7 +77,6 @@ fun String.getMouthName(): String {
     val calendar = Calendar.getInstance(Locale.getDefault())
     calendar.timeZone = TimeZone.getDefault()
     calendar.set(dates[2].toInt(), dates[1].toInt() - 1, dates[0].toInt())
-
     return calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) ?: ""
 }
 

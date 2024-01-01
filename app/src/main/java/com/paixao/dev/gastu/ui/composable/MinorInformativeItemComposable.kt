@@ -1,7 +1,9 @@
 package com.paixao.dev.gastu.ui.composable
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,7 +23,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paixao.dev.gastu.extensions.smartTruncation
+import com.paixao.dev.gastu.extensions.toCurrency
 import com.paixao.dev.gastu.ui.theme.GastuTheme
+import java.math.BigDecimal
 
 @Composable
 fun MinorInformativeItem(
@@ -42,16 +46,18 @@ fun MinorInformativeItem(
                 .fillMaxWidth()
                 .height(IntrinsicSize.Max),
         ) {
+            // Icon of item
             Image(
                 image, "",
                 modifier = Modifier
                     .size(54.dp)
                     .padding(start = 5.dp)
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
+
+            // Name and description of item
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Center
             ) {
                 MessageTextWithMinorDescription(
                     title = title?.smartTruncation(40) ?: "Deal",
@@ -60,10 +66,12 @@ fun MinorInformativeItem(
                 )
             }
 
-            Box(
+            // Value and alert of item
+            Column(
                 modifier = Modifier
                     .wrapContentWidth()
-                    .fillMaxHeight()
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.Center
             ) {
                 MessageWithIcon(
                     message = currencyValue,
@@ -75,8 +83,6 @@ fun MinorInformativeItem(
                     iconModifier = iconModifier
                 )
             }
-
-
         }
     }
 }
@@ -89,7 +95,7 @@ fun MinorInformativeItemPreview() {
             image = Icons.Default.AccountCircle,
             title = "Condomínio atrasado pra caralho",
             description = listOf("Lazer", "Contas de gastos referentes ao mes de abril", "Fixa"),
-            currencyValue = "R$ 0,0",
+            currencyValue = BigDecimal.TEN.toCurrency(),
             icon = Icons.Default.Warning,
             iconColor = Color.Red
         )

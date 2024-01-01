@@ -19,7 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paixao.dev.gastu.domain.util.DealTypeEnum
+import com.paixao.dev.gastu.extensions.toCurrency
 import com.paixao.dev.gastu.ui.theme.GastuTheme
+import java.math.BigDecimal
 
 @Composable
 internal fun DealValueWithType(
@@ -53,6 +55,6 @@ internal fun DealValueWithType(
 @Composable
 fun DealValueWithTypePreview() {
     GastuTheme {
-        DealValueWithType(value = "")
+        DealValueWithType(value = BigDecimal.ONE.toCurrency())
     }
 }
