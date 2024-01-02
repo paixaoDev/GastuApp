@@ -25,7 +25,6 @@ import com.paixao.dev.gastu.ui.theme.GastuTheme
 import com.paixao.dev.gastu.ui.theme.GrayBackground10
 import com.paixao.dev.gastu.ui.theme.GreenBackground
 import com.paixao.dev.gastu.ui.theme.RedBackground
-import com.paixao.dev.gastu.ui.theme.WhiteBackground20
 import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 
