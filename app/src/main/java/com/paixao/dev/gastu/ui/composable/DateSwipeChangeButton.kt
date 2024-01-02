@@ -37,7 +37,11 @@ import com.paixao.dev.gastu.ui.theme.YellowBackground
 
 
 @Composable
-fun DateSwipeChangeButton(date: String, hasRequired: Boolean = false) {
+fun DateSwipeChangeButton(
+    date: String,
+    hasRequired: Boolean = false,
+    onChange: (String) -> Unit = {}
+) {
     val sensibility = 20
     var dateTime by remember { mutableStateOf(date) }
     var amount by remember { mutableStateOf(0f) }
@@ -50,16 +54,21 @@ fun DateSwipeChangeButton(date: String, hasRequired: Boolean = false) {
             .background(WhiteBackground20)
             .size(100.dp)
             .pointerInput(Unit) {
-                detectDragGestures { _, dragAmount ->
-                    amount += dragAmount.x
-                    if (amount > sensibility) {
-                        dateTime = dateTime.plusActualDate()
-                        amount = 0f
-                    } else if (amount < -sensibility) {
-                        dateTime = dateTime.minusActualDate()
-                        amount = 0f
+                detectDragGestures(
+                    onDrag = { _, dragAmount ->
+                        amount += dragAmount.x
+                        if (amount > sensibility) {
+                            dateTime = dateTime.plusActualDate()
+                            amount = 0f
+                        } else if (amount < -sensibility) {
+                            dateTime = dateTime.minusActualDate()
+                            amount = 0f
+                        }
+                    },
+                    onDragEnd = {
+                        onChange.invoke(dateTime)
                     }
-                }
+                )
             }
 
     ) {

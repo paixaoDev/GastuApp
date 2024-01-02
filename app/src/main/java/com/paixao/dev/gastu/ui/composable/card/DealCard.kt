@@ -1,10 +1,8 @@
 package com.paixao.dev.gastu.ui.composable.card
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +14,6 @@ import com.paixao.dev.gastu.extensions.toCurrency
 import com.paixao.dev.gastu.presentation.model.DealModel
 import com.paixao.dev.gastu.ui.composable.MinorInformativeItem
 import com.paixao.dev.gastu.ui.theme.GastuTheme
-import com.paixao.dev.gastu.ui.theme.WhiteBackground20
 import java.math.BigDecimal
 
 @Composable
@@ -28,7 +25,6 @@ internal fun DealCard(
     val hasEarning = deal.dealType == DealTypeEnum.Earning.name
     Box(Modifier.clickable { onClick.invoke(deal) }) {
         MinorInformativeItem(
-            image = Icons.Default.AccountCircle,
             title = deal.name,
             description = listOf(
                 deal.category.toString(),

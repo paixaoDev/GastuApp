@@ -83,14 +83,14 @@ class MainActivity : ComponentActivity() {
                         BottomSheetLayoutContent(
                             tittle = "Edite sua Transação",
                             bottomSheetContent = {
-                                SimpleCurrencyForm(editingType, deal) {
+                                SimpleCurrencyForm(editingType, deal) { editedDeal ->
                                     if (deal != null) {
+                                        viewModel.updateDeal(editedDeal)
                                         isEditing = false
-                                        viewModel.updateDeal(it)
                                         deal = null
                                     } else {
+                                        viewModel.addDeal(editedDeal)
                                         isEditing = false
-                                        viewModel.addDeal(it)
                                     }
                                 }
                             }

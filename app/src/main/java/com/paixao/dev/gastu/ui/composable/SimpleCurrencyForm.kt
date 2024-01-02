@@ -64,7 +64,9 @@ fun SimpleCurrencyForm(
                 Row(
                     verticalAlignment = Alignment.Bottom
                 ) {
-                    DateSwipeChangeButton(date, true)
+                    DateSwipeChangeButton(date, true) {
+                        date = it
+                    }
                     Spacer(modifier = Modifier.size(20.dp))
                     EditTextWithPriority(
                         textFieldValue = dealValue.maskCurrencyToTextField(),

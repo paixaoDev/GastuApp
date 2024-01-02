@@ -1,6 +1,5 @@
 package com.paixao.dev.gastu.ui.composable
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -29,7 +27,6 @@ import java.math.BigDecimal
 
 @Composable
 fun MinorInformativeItem(
-    image: ImageVector,
     title: String?,
     description: List<String>,
     currencyValue: String,
@@ -46,14 +43,6 @@ fun MinorInformativeItem(
                 .fillMaxWidth()
                 .height(IntrinsicSize.Max),
         ) {
-            // Icon of item
-            Image(
-                image, "",
-                modifier = Modifier
-                    .size(54.dp)
-                    .padding(start = 5.dp)
-            )
-
             // Name and description of item
             Column(
                 modifier = Modifier.weight(1f),
@@ -92,7 +81,6 @@ fun MinorInformativeItem(
 fun MinorInformativeItemPreview() {
     GastuTheme {
         MinorInformativeItem(
-            image = Icons.Default.AccountCircle,
             title = "Condomínio atrasado pra caralho",
             description = listOf("Lazer", "Contas de gastos referentes ao mes de abril", "Fixa"),
             currencyValue = BigDecimal.TEN.toCurrency(),
