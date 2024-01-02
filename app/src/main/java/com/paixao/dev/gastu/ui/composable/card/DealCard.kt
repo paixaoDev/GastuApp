@@ -40,7 +40,6 @@ internal fun DealCard(
             icon = if (deal.hasFixed) Icons.Default.Lock else null,
             textColor = if (hasEarning) Color.Green else Color.Red,
             iconColor = if (deal.hasExecuted) Color.Green else Color.Red,
-            modifier = modifier.background(WhiteBackground20)
         )
     }
 }
